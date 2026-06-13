@@ -8,6 +8,8 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 export default defineConfig({
+  base: '/hoctienganh3/',
+
   plugins: [react(), tailwindcss()],
 
   resolve: {
@@ -16,11 +18,8 @@ export default defineConfig({
     },
   },
 
-  base: '/hoctienganh3/',
   server: {
     host: '0.0.0.0',
     port: 5173,
-    hmr: process.env.DISABLE_HMR !== 'true',
-    watch: process.env.DISABLE_HMR === 'true' ? null : {},
   },
 });
