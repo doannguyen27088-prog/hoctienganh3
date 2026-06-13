@@ -38,12 +38,10 @@ function formatYoutubeEmbed(url: string): string {
 export function VideoSection({ user, activeChapterId, onSelectChapter, onUpdateUser }: VideoSectionProps) {
   const currentChapter = CHAPTERS.find(c => c.id === activeChapterId) || CHAPTERS[0];
 
-  // Load custom video URLs map from user profile or localStorage
+  // Load custom video URLs map directly from global localStorage
+  // so they are shared and persistent for all accounts on logout or switch
   const [customVideoUrls, setCustomVideoUrls] = useState<Record<number, string>>(() => {
     try {
-      if (user.customVideoUrls && Object.keys(user.customVideoUrls).length > 0) {
-        return user.customVideoUrls;
-      }
       const saved = localStorage.getItem('english_l3_video_urls');
       return saved ? JSON.parse(saved) : {};
     } catch (e) {
@@ -54,13 +52,6 @@ export function VideoSection({ user, activeChapterId, onSelectChapter, onUpdateU
 
   const [isEditing, setIsEditing] = useState(false);
   const [editUrlInput, setEditUrlInput] = useState('');
-
-  // Sync customVideoUrls when user object changes
-  useEffect(() => {
-    if (user.customVideoUrls) {
-      setCustomVideoUrls(user.customVideoUrls);
-    }
-  }, [user.customVideoUrls]);
 
   // Resolve active URL
   const currentVideoUrl = customVideoUrls[activeChapterId] || currentChapter.videoUrl;
