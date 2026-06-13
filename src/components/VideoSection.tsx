@@ -43,7 +43,27 @@ export function VideoSection({ user, activeChapterId, onSelectChapter, onUpdateU
   const [customVideoUrls, setCustomVideoUrls] = useState<Record<number, string>>(() => {
     try {
       const saved = localStorage.getItem('english_l3_video_urls');
-      return saved ? JSON.parse(saved) : {};
+      const parsed = saved ? JSON.parse(saved) : {};
+      
+      // If they had the old default links stored, remove them to fall back to the new updated ones
+      let changed = false;
+      const oldDefaults = {
+        1: "https://www.youtube.com/embed/gVIFEVLzRyI",
+        2: "https://www.youtube.com/embed/2_Y5SWe1XoM"
+      };
+      
+      Object.entries(oldDefaults).forEach(([idStr, oldUrl]) => {
+        const id = Number(idStr);
+        if (parsed[id] === oldUrl) {
+          delete parsed[id];
+          changed = true;
+        }
+      });
+      
+      if (changed) {
+        localStorage.setItem('english_l3_video_urls', JSON.stringify(parsed));
+      }
+      return parsed;
     } catch (e) {
       console.error("Failed to load custom video urls", e);
       return {};

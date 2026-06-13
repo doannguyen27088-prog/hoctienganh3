@@ -6,7 +6,7 @@ export const CHAPTERS: Chapter[] = [
     title: "Chương 1: Hello",
     description: "Học cách chào hỏi và giới thiệu tên của con qua tiếng Anh nhé!",
     emoji: "👋",
-    videoUrl: "https://www.youtube.com/embed/gVIFEVLzRyI", // Hello Song
+    videoUrl: "https://www.youtube.com/embed/tVlcKp3bWH8", // Hello Song
     speakingPrompt: "What's your name?",
     vocabulary: [
       { id: "c1-v1", english: "hello", vietnamese: "xin chào", emoji: "👋" },
@@ -58,7 +58,7 @@ export const CHAPTERS: Chapter[] = [
     title: "Chương 2: My School",
     description: "Nhận biết các đồ vật quen thuộc trong và ngoài lớp học của con.",
     emoji: "🎒",
-    videoUrl: "https://www.youtube.com/embed/2_Y5SWe1XoM", // School Song
+    videoUrl: "https://www.youtube.com/embed/wcmcMh19Qc4", // School Song
     speakingPrompt: "This is my school.",
     vocabulary: [
       { id: "c2-v1", english: "school", vietnamese: "trường học", emoji: "🏫" },
