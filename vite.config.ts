@@ -16,8 +16,7 @@ export default defineConfig({
     },
   },
 
-    base: '/pdf2word/' ,
-  
+  base: '/hoctienganh3/',
   server: {
     host: '0.0.0.0',
     port: 5173,
