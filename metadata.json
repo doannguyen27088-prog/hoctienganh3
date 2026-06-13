@@ -1,0 +1,10 @@
+{
+  "name": "Bé Vui Học Tiếng Anh Lớp 3",
+  "description": "Ứng dụng học tiếng Anh tương tác dành cho học sinh lớp 3 theo chương trình hiện hành tại Việt Nam với công nghệ nhận diện giọng nói và chấm điểm phát âm từ Teacher Lucy.",
+  "requestFramePermissions": [
+    "microphone"
+  ],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
