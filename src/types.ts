@@ -9,6 +9,7 @@ export interface User {
   practiceHistory: PracticeHistoryItem[];
   totalScore: number;
   lastActive: string;
+  customVideoUrls?: Record<number, string>; // account customized videos tracking
 }
 
 export interface PracticeHistoryItem {

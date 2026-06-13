@@ -114,6 +114,7 @@ export default function App() {
             user={activeUser}
             activeChapterId={activeChapterId}
             onSelectChapter={(id) => setActiveChapterId(id)}
+            onUpdateUser={handleUpdateUser}
           />
         );
       case 'speak':

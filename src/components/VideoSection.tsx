@@ -9,6 +9,7 @@ interface VideoSectionProps {
   user: User;
   activeChapterId: number;
   onSelectChapter: (id: number) => void;
+  onUpdateUser: (updatedUser: User) => void;
 }
 
 // Support parsing any regular youtube link into an embeddable link format
@@ -19,11 +20,11 @@ function formatYoutubeEmbed(url: string): string {
   // If it's already an embed link, return as is
   if (url.includes('/embed/')) return url;
   
-  // Parse watch link: youtube.com/watch?v=VIDEO_ID or youtu.be/VIDEO_ID or youtube.com/v/VIDEO_ID
-  const watchRegex = /(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/|youtube\.com\/v\/)([a-zA-Z0-9_-]+)/;
+  // Parse watch, short, live or youtu.be links
+  const watchRegex = /(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/|youtube\.com\/shorts\/|youtube\.com\/live\/|youtube\.com\/v\/)([a-zA-Z0-9_-]+)/;
   const match = url.match(watchRegex);
   if (match && match[1]) {
-    return `https://www.youtube.com/embed/${match[1]}`;
+    return `https://www.youtube.com/embed/${match[1].substring(0, 11)}`;
   }
   
   // Just in case they paste only the video ID (e.g. "gVIFEVLzRyI")
@@ -34,12 +35,15 @@ function formatYoutubeEmbed(url: string): string {
   return url;
 }
 
-export function VideoSection({ user, activeChapterId, onSelectChapter }: VideoSectionProps) {
+export function VideoSection({ user, activeChapterId, onSelectChapter, onUpdateUser }: VideoSectionProps) {
   const currentChapter = CHAPTERS.find(c => c.id === activeChapterId) || CHAPTERS[0];
 
-  // Load custom video URLs map from localStorage
+  // Load custom video URLs map from user profile or localStorage
   const [customVideoUrls, setCustomVideoUrls] = useState<Record<number, string>>(() => {
     try {
+      if (user.customVideoUrls && Object.keys(user.customVideoUrls).length > 0) {
+        return user.customVideoUrls;
+      }
       const saved = localStorage.getItem('english_l3_video_urls');
       return saved ? JSON.parse(saved) : {};
     } catch (e) {
@@ -50,6 +54,13 @@ export function VideoSection({ user, activeChapterId, onSelectChapter }: VideoSe
 
   const [isEditing, setIsEditing] = useState(false);
   const [editUrlInput, setEditUrlInput] = useState('');
+
+  // Sync customVideoUrls when user object changes
+  useEffect(() => {
+    if (user.customVideoUrls) {
+      setCustomVideoUrls(user.customVideoUrls);
+    }
+  }, [user.customVideoUrls]);
 
   // Resolve active URL
   const currentVideoUrl = customVideoUrls[activeChapterId] || currentChapter.videoUrl;
@@ -68,7 +79,16 @@ export function VideoSection({ user, activeChapterId, onSelectChapter }: VideoSe
     const parsedUrl = formatYoutubeEmbed(newUrl);
     const updated = { ...customVideoUrls, [activeChapterId]: parsedUrl };
     setCustomVideoUrls(updated);
+    
+    // Save to localStorage
     localStorage.setItem('english_l3_video_urls', JSON.stringify(updated));
+    
+    // Save to user profile
+    onUpdateUser({
+      ...user,
+      customVideoUrls: updated
+    });
+
     setIsEditing(false);
     speakVietnamese("Đã thay đổi video bài giảng của cô thành công rồi nè!");
   };
@@ -77,7 +97,16 @@ export function VideoSection({ user, activeChapterId, onSelectChapter }: VideoSe
     const updated = { ...customVideoUrls };
     delete updated[activeChapterId];
     setCustomVideoUrls(updated);
+    
+    // Save to localStorage
     localStorage.setItem('english_l3_video_urls', JSON.stringify(updated));
+    
+    // Save to user profile
+    onUpdateUser({
+      ...user,
+      customVideoUrls: updated
+    });
+
     setEditUrlInput(currentChapter.videoUrl);
     setIsEditing(false);
     speakVietnamese("Đã khôi phục video bài giảng gốc của cô thành công!");
